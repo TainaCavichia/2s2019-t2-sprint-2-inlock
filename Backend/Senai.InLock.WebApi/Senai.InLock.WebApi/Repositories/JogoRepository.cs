@@ -1,4 +1,5 @@
-﻿using Senai.InLock.WebApi.Domains;
+﻿using Microsoft.EntityFrameworkCore;
+using Senai.InLock.WebApi.Domains;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,38 @@ namespace Senai.InLock.WebApi.Repositories
             using (InLockContext ctx = new InLockContext())
             {
                 return ctx.Jogos.ToList();
+            }
+        }
+
+        public List<Jogos> ListarEstudiosEJogos()
+        {
+            using (InLockContext ctx = new InLockContext())
+            {
+                return ctx.Jogos.Include(x => x.Estudio).ToList();
+            }
+        }
+
+        public List<Jogos> ListarPeloPreco()
+        {
+            using (InLockContext ctx = new InLockContext())
+            {
+                return ctx.Jogos.Take(5).OrderByDescending(x => x.Valor).ToList();
+            }
+        }
+
+        public List<Jogos> ListarLancamentos()
+        {
+            using (InLockContext ctx = new InLockContext())
+            {
+                return ctx.Jogos.OrderByDescending(x => x.DataLancamento).ToList();
+            }
+        }
+
+        public Jogos BuscarPorNome(string nome)
+        {
+            using (InLockContext ctx = new InLockContext())
+            {
+                return ctx.Jogos.FirstOrDefault(x => x.NomeJogo == nome);
             }
         }
 
@@ -37,7 +70,7 @@ namespace Senai.InLock.WebApi.Repositories
         {
             using (InLockContext ctx = new InLockContext())
             {
-                Jogos JogoBuscado = ctx.Jogos.FirstOrDefault(x => x.JogosId == jogo.EstudioId);
+                Jogos JogoBuscado = ctx.Jogos.FirstOrDefault(x => x.JogosId == jogo.JogosId);
                 JogoBuscado.NomeJogo = jogo.NomeJogo;
                 ctx.Jogos.Update(JogoBuscado);
                 ctx.SaveChanges();

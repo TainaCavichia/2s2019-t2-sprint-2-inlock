@@ -24,6 +24,41 @@ namespace Senai.InLock.WebApi.Controllers
             return Ok(jogoRepository.Listar());
         }
 
+        [Authorize]
+        [HttpGet("estudios")]
+        public IActionResult ListarEstudiosEJogos()
+        {
+            return Ok(jogoRepository.ListarEstudiosEJogos());
+        }
+
+        [Authorize]
+        [HttpGet("precos")]
+        public IActionResult ListarPeloPreco()
+        {
+            return Ok(jogoRepository.ListarPeloPreco());
+        }
+
+        [Authorize]
+        [HttpGet("lancamentos")]
+        public IActionResult ListarLancamentos()
+        {
+            return Ok(jogoRepository.ListarLancamentos());
+        }
+
+        [Authorize(Roles = "ADMINISTRADOR")]
+        [HttpGet("buscarpornome/{nome}")]
+        public IActionResult BuscarPorNome(string nome)
+        {
+            Jogos jogo = jogoRepository.BuscarPorNome(nome);
+
+            if (jogo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(jogo);
+        }
+
         [Authorize(Roles = "ADMINISTRADOR")]
         [HttpGet("{id}")]
         public IActionResult BuscarPorId(int id)
@@ -36,7 +71,6 @@ namespace Senai.InLock.WebApi.Controllers
             }
 
             return Ok(jogo);
-
         }
 
         [Authorize(Roles = "ADMINISTRADOR")]
@@ -89,7 +123,7 @@ namespace Senai.InLock.WebApi.Controllers
                     return NotFound();
                 }
 
-                jogoRepository.Atualizar(JogoBuscado);
+                jogoRepository.Deletar(id);
                 return Ok();
             }
             catch (Exception)
